@@ -13,9 +13,8 @@ def download_media():
     #name = request.form.get("name")
     name = "s_don.03"
     # Instaloader 인스턴스 생성
-    # Instaloader 인스턴스 생성
     loader = instaloader.Instaloader()
-    loader.login(user="test_testmm",passwd="khc031103@")
+    loader.login(user="test_testmm",passwd="khc031103@@")
 
     # 특정 계정의 피드 가져오기
     profile = instaloader.Profile.from_username(loader.context, name)
