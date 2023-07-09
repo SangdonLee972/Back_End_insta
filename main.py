@@ -5,14 +5,17 @@ from instaloader import Profile, Post
 
 
 app = Flask("instaloader")
+
 @app.route("/imageDownload")
 def download_media():
+
     # 클라이언트로부터 name 값을 받아옴
     #name = request.form.get("name")
     name = "s_don.03"
     # Instaloader 인스턴스 생성
     # Instaloader 인스턴스 생성
     loader = instaloader.Instaloader()
+    loader.login(user="test_testmm",passwd="khc031103@")
 
     # 특정 계정의 피드 가져오기
     profile = instaloader.Profile.from_username(loader.context, name)
