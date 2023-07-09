@@ -21,7 +21,7 @@ def download_media():
     # 이미지와 영상 URL 추출
     media_urls = []
     video_urls = []
-    print("A")
+    print("sex")
     for post in feed:           
         if post.is_video:
             video_urls.append(post.video_url)
