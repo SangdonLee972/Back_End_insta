@@ -36,16 +36,23 @@ def createuser():
 
 @app.route('/save_uri', methods=['POST'])
 def saved_post():
-    saved_uri = request.form.get("saved_uri")
-    doc_ref = db.collection(u'users').document(user_token)
+    uuid = request.form.get("uuid")
+    uri = request.form.get("uri")
     
-    # Update savedList field with the new URI
-    doc_ref.update({
-        u'savedList': firestore.ArrayUnion([saved_uri])
-    })
+    # Find the document with the corresponding UUID
+    doc_ref = db.collection(u'users').document(uuid)
+    doc = doc_ref.get()
     
-    response = make_response('URI saved successfully', 200)
-    return response
+    if doc.exists:
+        # Update the savedList field with the new URI
+        saved_list = doc.get("savedList", [])
+        saved_list.append(uri)
+        doc_ref.update({
+            u'savedList': saved_list
+        })
+        return make_response('URI saved successfully', 200)
+    else:
+        return make_response('User not found', 404)
 
 @app.route('/get_user_Highlight',methods=['POST'])
 def get_user_hightlight():
