@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request,make_response
 import requests
 from flask import Response
 import firebase_admin
@@ -10,6 +10,7 @@ firebase_admin.initialize_app(cred)
 
 ######### FIREBASE ###########
 db = firestore.client()
+
 
 
 
@@ -31,7 +32,9 @@ def createuser():
         })
         return 'ok'
     else:
-        return 'User already exists'
+        data = doc.to_dict()
+        return data.get("savedList",[])
+
 
 
 @app.route('/save_uri', methods=['POST'])
@@ -45,14 +48,20 @@ def saved_post():
     
     if doc.exists:
         # Update the savedList field with the new URI
-        saved_list = doc.get("savedList", [])
+        data = doc.to_dict()
+        saved_list = data.get("savedList", [])
         saved_list.append(uri)
         doc_ref.update({
             u'savedList': saved_list
         })
         return make_response('URI saved successfully', 200)
     else:
-        return make_response('User not found', 404)
+        # Create a new document with the UUID and the URI
+        doc_ref.set({
+            u'user_token': uuid,
+            u'savedList': [uri]
+        })
+        return make_response('New document created', 201)
 
 @app.route('/get_user_Highlight',methods=['POST'])
 def get_user_hightlight():
