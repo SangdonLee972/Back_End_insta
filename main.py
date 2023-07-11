@@ -26,13 +26,26 @@ def createuser():
     doc = doc_ref.get()
     if not doc.exists:
         doc_ref.create({
-            u'user_token': user_token,
+            u'user_token': user_token, 
+            u'savedList': []
         })
         return 'ok'
     else:
         return 'User already exists'
 
 
+@app.route('/save_uri', methods=['POST'])
+def saved_post():
+    saved_uri = request.form.get("saved_uri")
+    doc_ref = db.collection(u'users').document(user_token)
+    
+    # Update savedList field with the new URI
+    doc_ref.update({
+        u'savedList': firestore.ArrayUnion([saved_uri])
+    })
+    
+    response = make_response('URI saved successfully', 200)
+    return response
 
 @app.route('/get_user_Highlight',methods=['POST'])
 def get_user_hightlight():
