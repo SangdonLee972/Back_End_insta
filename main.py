@@ -8,6 +8,15 @@ from firebase_admin import firestore
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
+
+
+
+
+
+
+
+
+
 ######### FIREBASE ###########
 db = firestore.client()
 
@@ -130,15 +139,13 @@ def get_user_reels():
     response = requests.get(url, headers=headers, params=querystring)
     return Response(response.content, content_type=response.headers['Content-Type'])
 
-@app.route('/get_user_post')
+@app.route('/get_user_post',methods =['POST'])
 def download_media():
-    #name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
-    name ="s_don.03"
+    name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
 
     url = "https://instagram-scraper-2022.p.rapidapi.com/ig/posts_username/"
 
     querystring = {"user":name}
-
     headers = {
         "X-RapidAPI-Key": "a6cc07d155mshef5faed51b433bbp11569ejsn9f5af6ece890",
         "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
