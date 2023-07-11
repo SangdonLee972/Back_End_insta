@@ -1,10 +1,33 @@
 from flask import Flask, jsonify, request
 import requests
 from flask import Response
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+
+cred = credentials.Certificate("serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+
+######### FIREBASE ###########
+db = firestore.client()
+
+
+
+
 
 
 
 app = Flask("instaloader")
+@app.route('/addUser', methods = ['POST'])
+def addUser():
+    user_token = request.form.get("user_token")
+    doc_ref = db.collection(u'users').document(u'user01')
+    doc_ref.set({
+        u'user_token': user_token,
+    })
+    return 'ok'
+
+
 
 @app.route('/get_user_Highlight',methods=['POST'])
 def get_user_hightlight():
@@ -73,10 +96,10 @@ def get_user_reels():
     response = requests.get(url, headers=headers, params=querystring)
     return Response(response.content, content_type=response.headers['Content-Type'])
 
-@app.route('/get_user_post',methods=['POST'])
+@app.route('/get_user_post')
 def download_media():
-    name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
-
+    #name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
+    name ="s_don.03"
 
     url = "https://instagram-scraper-2022.p.rapidapi.com/ig/posts_username/"
 
