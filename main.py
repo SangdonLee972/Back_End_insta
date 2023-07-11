@@ -20,13 +20,17 @@ db = firestore.client()
 app = Flask("instaloader")
 @app.route('/addUser', methods = ['POST'])
 def addUser():
-    user_token = request.form.get("user_token")
-    doc_ref = db.collection(u'users').document(u'user01')
-    doc_ref.set({
-        u'user_token': user_token,
-    })
-    return 'ok'
+   user_token = request.form.get("user_token")
+   doc_ref = db.collection(u'users').document(user_token)
 
+   doc = doc_ref.get()
+   if not doc.exists:
+     doc_ref.set({
+       u'user_token': user_token,
+               })
+        return 'ok'
+    else:
+        return 'User already exists'
 
 
 @app.route('/get_user_Highlight',methods=['POST'])
