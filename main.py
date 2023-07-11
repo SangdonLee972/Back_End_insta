@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import requests
+from flask import Response
 
 
 
@@ -27,7 +28,7 @@ def get_user_hightlight():
 
     response = requests.get(url, headers=headers, params=querystring)
 
-    return response
+    return Response(response.content, content_type=response.headers['Content-Type'])
 
 
 
@@ -52,7 +53,8 @@ def get_user_stories():
 
     response = requests.get(url, headers=headers, params=querystring)
 
-    return response
+    return Response(response.content, content_type=response.headers['Content-Type'])
+
 
 
 @app.route('/get_user_reels',methods=['POST'])
@@ -69,16 +71,16 @@ def get_user_reels():
     }
 
     response = requests.get(url, headers=headers, params=querystring)
-    return response
+    return Response(response.content, content_type=response.headers['Content-Type'])
 
-@app.route('/get_user_post', methods=['POST'])
+@app.route('/get_user_post')
 def download_media():
-    name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
+  #  name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
 
 
     url = "https://instagram-scraper-2022.p.rapidapi.com/ig/posts_username/"
 
-    querystring = {"user":name}
+    querystring = {"user":"s_don.03"}
 
     headers = {
         "X-RapidAPI-Key": "a6cc07d155mshef5faed51b433bbp11569ejsn9f5af6ece890",
@@ -87,8 +89,7 @@ def download_media():
 
     response = requests.get(url, headers=headers, params=querystring)
 
-    return response
-
+    return Response(response.content, content_type=response.headers['Content-Type'])
 
 def get_user_id(name):
     url = "https://instagram-scraper-2022.p.rapidapi.com/ig/user_id/"
@@ -103,7 +104,7 @@ def get_user_id(name):
     response = requests.get(url, headers=headers, params=querystring)
 
     print(response.json())
-    return response
+    return Response(response.content, content_type=response.headers['Content-Type'])
 
 
 if __name__ == "__main__":
