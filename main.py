@@ -73,7 +73,7 @@ def get_user_reels():
     response = requests.get(url, headers=headers, params=querystring)
     return Response(response.content, content_type=response.headers['Content-Type'])
 
-@app.route('/get_user_post',methods['POST'])
+@app.route('/get_user_post',methods=['POST'])
 def download_media():
     name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
 
