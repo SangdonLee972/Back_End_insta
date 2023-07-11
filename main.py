@@ -1,47 +1,112 @@
 from flask import Flask, jsonify, request
-import instaloader
-from instaloader import Profile, Post
+import requests
 
 
 
 app = Flask("instaloader")
 
-@app.route("/imageDownload")
-def download_media():
+@app.route('/get_user_Highlight',methods=['POST'])
+def get_user_hightlight():
+    name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
 
-    # 클라이언트로부터 name 값을 받아옴
-    #name = request.form.get("name")
-    name = "s_don.03"
-    # Instaloader 인스턴스 생성
-    loader = instaloader.Instaloader()
-    try:
-      loader.login(user="test_testmm",passwd="khc031103@@")
-    except TwoFactorAuthRequiredException:
-        L.two_factor_login(11111)
+    user_id_response = get_user_id(name)
+    user_id_json = user_id_response.json()
 
-    # 특정 계정의 피드 가져오기
-    profile = instaloader.Profile.from_username(loader.context, name)
-    feed = profile.get_posts()
+    user_id = user_id_json['id']
+    time_gen = user_id_json['unrelated_data']['time_gen']
 
-    # 이미지와 영상 URL 추출
-    media_urls = []
-    video_urls = []
-    print("sex")
-    for post in feed:           
-        if post.is_video:
-            video_urls.append(post.video_url)
-        else:
-            media_urls.append(post.url)
+    url = "https://instagram-scraper-2022.p.rapidapi.com/ig/highlights_tray/"
 
-    response = {
-        "media_urls": media_urls,
-        "video_urls": video_urls
+    querystring = {"id_user":user_id}
+
+    headers = {
+        "X-RapidAPI-Key": "a6cc07d155mshef5faed51b433bbp11569ejsn9f5af6ece890",
+        "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
     }
 
-    return jsonify(response)
+
+    response = requests.get(url, headers=headers, params=querystring)
+
+    return response
+
+
+
+@app.route('/get_user_stories',methods=['POST'])
+def get_user_stories():
+    name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
+
+    user_id_response = get_user_id(name)
+    user_id_json = user_id_response.json()
+
+    user_id = user_id_json['id']
+    time_gen = user_id_json['unrelated_data']['time_gen']
+
+    url = "https://instagram-scraper-2022.p.rapidapi.com/ig/stories/"
+
+    querystring = {"id_user":user_id}
+
+    headers = {
+        "X-RapidAPI-Key": "a6cc07d155mshef5faed51b433bbp11569ejsn9f5af6ece890",
+        "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
+    }
+
+    response = requests.get(url, headers=headers, params=querystring)
+
+    return response
+
+
+@app.route('/get_user_reels',methods=['POST'])
+def get_user_reels():
+    name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
+
+    url = "https://instagram-scraper-2022.p.rapidapi.com/ig/reels_posts_username/"
+
+    querystring = {"user":name}
+
+    headers = {
+        "X-RapidAPI-Key": "a6cc07d155mshef5faed51b433bbp11569ejsn9f5af6ece890",
+        "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
+    }
+
+    response = requests.get(url, headers=headers, params=querystring)
+    return response
+
+@app.route('/get_user_post', methods=['POST'])
+def download_media():
+    name = request.form.get("name")  # 클라이언트로부터 name 값을 받아옴
+
+
+    url = "https://instagram-scraper-2022.p.rapidapi.com/ig/posts_username/"
+
+    querystring = {"user":name}
+
+    headers = {
+        "X-RapidAPI-Key": "a6cc07d155mshef5faed51b433bbp11569ejsn9f5af6ece890",
+        "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
+    }
+
+    response = requests.get(url, headers=headers, params=querystring)
+
+    return response
+
+
+def get_user_id(name):
+    url = "https://instagram-scraper-2022.p.rapidapi.com/ig/user_id/"
+
+    querystring = {"user":"cr7cristianoronaldo"}
+
+    headers = {
+        "X-RapidAPI-Key": "a6cc07d155mshef5faed51b433bbp11569ejsn9f5af6ece890",
+        "X-RapidAPI-Host": "instagram-scraper-2022.p.rapidapi.com"
+    }
+
+    response = requests.get(url, headers=headers, params=querystring)
+
+    print(response.json())
+    return response
+
 
 if __name__ == "__main__":
-
     app.run('0.0.0.0',port=5000,debug=True)
 
     
