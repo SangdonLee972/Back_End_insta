@@ -25,7 +25,7 @@ def createuser():
 
     doc = doc_ref.get()
     if not doc.exists:
-        doc_ref.set({
+        doc_ref.create({
             u'user_token': user_token,
         })
         return 'ok'
