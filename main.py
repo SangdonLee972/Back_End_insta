@@ -39,7 +39,7 @@ def createuser():
             u'user_token': user_token, 
             u'savedList': []
         })
-        return 'ok'
+        return 'ok' 
     else:
         data = doc.to_dict()
         return data.get("savedList",[])
@@ -49,8 +49,10 @@ def createuser():
 @app.route('/save_uri', methods=['POST'])
 def saved_post():
     uuid = request.form.get("uuid")
-    uri = request.form.get("uri")
-    
+    is_video = request.form.get("is_video")
+    video_url = request.form.get("video_url")
+    image_url = request.form.get("image_url")
+
     # Find the document with the corresponding UUID
     doc_ref = db.collection(u'users').document(uuid)
     doc = doc_ref.get()
@@ -59,16 +61,25 @@ def saved_post():
         # Update the savedList field with the new URI
         data = doc.to_dict()
         saved_list = data.get("savedList", [])
-        saved_list.append(uri)
+        item = {
+            'is_video': is_video,
+            'video_url': video_url,
+            'image_url': image_url
+        }
+        saved_list.append(item)
         doc_ref.update({
             u'savedList': saved_list
         })
         return make_response('URI saved successfully', 200)
     else:
-        # Create a new document with the UUID and the URI
+        # Create a new document with the UUID and the data
         doc_ref.set({
             u'user_token': uuid,
-            u'savedList': [uri]
+            u'savedList': [{
+                'is_video': is_video,
+                'video_url': video_url,
+                'image_url': image_url
+            }]
         })
         return make_response('New document created', 201)
 
